@@ -1,0 +1,57 @@
+{% unless product.has_only_default_variant %}
+    <div class="product-form__controls-group">
+      {% for option in product.options_with_values %}
+        <div class="pf-container">
+          <div class="pf-element js-enabled">
+            <label for="Option{{ option.position }}" class="pf-label">
+              <span>{{ option.name }}</span>
+            </label>
+
+            {%- if show_swatches -%}
+              {%- assign option_name = option.name | downcase -%}
+              {%- assign option_setting = settings.swatch_option | downcase -%}
+
+              {% if option_name == option_setting %}
+                <div class="product-form__color-swatches" data-product-swatches data-product-option="Option{{ option.position }}">
+                  {% for value in option.values %}
+                    {%- if product.options.size == 1 -%}
+                      {%- if product.variants[forloop.index0].image -%}{%- assign variant_image = product.variants[forloop.index0].image -%}{%- endif -%}
+                    {%- endif -%}
+                    <a
+                      href="#"
+                      data-product-swatch
+                      data-product-swatch-option="{{ value }}"
+                      class="product__color-swatch {% if option.selected_value == value %}selected{% endif %}"
+                      style="background-color: {{ value | lowercase | replace: ' ', '' }}; background-image: url({{ variant_image | img_url }})"
+                      tabindex="0"
+                    >
+                    </a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+            {%- endif -%}
+
+            {% comment %}
+              All inputs that have `name=options[Name]` will be picked up by
+              ProductForm, registered as an option input, and made available
+              at ProductForm.optionsInputs
+            {% endcomment %}
+            <select
+              id="Option{{ option.position }}"
+              class="pf-input"
+              name="options[{{ option.name | escape }}]">
+              {% for value in option.values %}
+                <option value="{{ value | escape }}"
+                  {%- if option.selected_value == value -%}selected="selected"{%- endif -%}>
+                  {{ value }}
+                </option>
+              {% endfor %}
+            </select>
+
+            <div class="pf-icon" data-icon>{% render 'icon' with icon: 'arrow-drop-down' %}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endunless %}
