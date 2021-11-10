@@ -8,3 +8,11 @@
                     <a href="#" style="background-color: {{ value | lowercase | replace: ' ', '' }}; background-image: url({{ variant_image | img_url }})"></a>
                     {% endfor %}
                 {% endfor %}
+
+
+            $(document).ready(function() {
+              $(document).on('click', '.productgrid--item .form-options-first .option-value .option-value-label:not(.disabled)',function() {
+                var selectedval = $(this).find('.option-value-input').attr('data-value');
+                $(this).parents('.productgrid--item').find('select.form-options').val(selectedval);
+              });
+            });
